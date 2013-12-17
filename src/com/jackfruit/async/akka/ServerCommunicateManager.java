@@ -14,23 +14,16 @@ import com.typesafe.config.Config;
  *
  */
 public class ServerCommunicateManager {
-	/**
-	 * An ActorSystem reside on the server.
-	 */
+	/** An ActorSystem reside on the server. */
 	private static ActorSystem actorSystem;
-	/**
-	 * The name of the ActorSystem.
-	 */
+	/** The name of the ActorSystem. */
 	static final String ACTOR_SYSTEM_NAME = "serverActorSystem";
 	
-	/**
-	 * The Actor that responsible for receive and send messages.
-	 */
+	/** The Actor that responsible for receive and send messages. */
 	private static ActorRef serverActor;
-	/**
-	 * The name of the Actor that responsible for receive and send messages.
-	 */
+	/** The name of the Actor that responsible for receive and send messages.*/
 	static final String SERVER_ACTOR_NAME = "serverActor";
+	
 	
 	/**
 	 * Start the akka system with specified configuration.

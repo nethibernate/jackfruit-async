@@ -14,10 +14,9 @@ import com.jackfruit.async.session.ServerSession;
  *
  */
 public class MessageHandler {
-	/**
-	 * Cached server actors' path.
-	 */
+	/** Cached server actors' path. */
 	private static Map<String, ActorSelection> servers = new HashMap<String, ActorSelection>();
+	/** It's onReceive method will be invoked when receive a message. */
 	private static MessageReceive msgReceive;
 	
 	/**
