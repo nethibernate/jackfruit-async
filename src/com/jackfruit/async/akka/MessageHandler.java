@@ -6,6 +6,7 @@ import java.util.Map;
 import akka.actor.ActorRef;
 import akka.actor.ActorSelection;
 
+import com.jackfruit.async.msgreceive.MessageReceive;
 import com.jackfruit.async.session.ServerSession;
 /**
  * Message Send and Message Receive.
@@ -17,6 +18,8 @@ public class MessageHandler {
 	 * Cached server actors' path.
 	 */
 	private static Map<String, ActorSelection> servers = new HashMap<String, ActorSelection>();
+	private static MessageReceive msgReceive;
+	
 	/**
 	 * Send message to the specific server actor.
 	 * @param session server communicate actor system session. 
@@ -40,6 +43,16 @@ public class MessageHandler {
 	 * @return
 	 */
 	static boolean receiveMessage(Object message, ActorRef sender) {
-		return true;
+		if(msgReceive == null)
+			return false;
+		return msgReceive.onRecevie(message);
+	}
+	
+	/**
+	 * Set the message receive object.
+	 * @param msgReceiveObject
+	 */
+	static void setMessageRecieve(MessageReceive msgReceiveObject) {
+		msgReceive = msgReceiveObject;
 	}
 }

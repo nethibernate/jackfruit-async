@@ -5,6 +5,7 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 
 import com.jackfruit.async.config.ServerConfig;
+import com.jackfruit.async.msgreceive.MessageReceive;
 import com.typesafe.config.Config;
 /**
  * This manage the whole ActorSystem which
@@ -35,11 +36,13 @@ public class ServerCommunicateManager {
 	 * Start the akka system with specified configuration.
 	 * @param config
 	 */
-	public static void start(ServerConfig config) {
+	public static void start(ServerConfig config, MessageReceive msgReceive) {
 		Config akkaSysConfig = DAkkaConfigBuilder.build(
 				config.getIp(), config.getPort());
 		actorSystem = ActorSystem.create(ACTOR_SYSTEM_NAME, akkaSysConfig);
 		serverActor = actorSystem.actorOf(Props.create(DServerActior.class), SERVER_ACTOR_NAME);
+		
+		MessageHandler.setMessageRecieve(msgReceive);
 	}
 	
 	/**
