@@ -2,5 +2,25 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Jackfruit"/>
+	<classpathentry kind="lib" path="lib/akka-remote_2.10-2.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/akka-actor_2.10-2.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/config-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jna-3.0.9.jar"/>
+	<classpathentry kind="lib" path="lib/jnr-constants-0.8.2.jar"/>
+	<classpathentry kind="lib" path="lib/netty-3.6.6.Final.jar"/>
+	<classpathentry kind="lib" path="lib/protobuf-java-2.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/scala-reflect-2.10.2.jar"/>
+	<classpathentry kind="lib" path="lib/scala-stm_2.10-0.7.jar"/>
+	<classpathentry kind="lib" path="lib/scalabuff-runtime_2.10-1.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.2.jar"/>
+	<classpathentry kind="lib" path="lib/uncommons-maths-1.2.2a.jar"/>
+	<classpathentry kind="lib" path="lib/camel-core-2.10.3.jar"/>
+	<classpathentry kind="lib" path="lib/akka-slf4j_2.10-2.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/scala-library.jar"/>
+	<classpathentry kind="lib" path="lib/config-builder.jar"/>
+	<classpathentry kind="lib" path="lib/velocity-1.7-dep.jar"/>
+	<classpathentry kind="lib" path="lib/velocity-1.7.jar"/>
+	<classpathentry kind="lib" path="lib/guava-15.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
