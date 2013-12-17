@@ -17,6 +17,8 @@ public class ServerConfig {
 	private String ip;
 	/** 服务器的端口 */
 	private int port;
+	/** 服务器之间通信模块构建成功之后的汇报路径 */
+	private String reportPath;
 
 	public int getServerType() {
 		return serverType;
@@ -36,6 +38,10 @@ public class ServerConfig {
 
 	public int getPort() {
 		return port;
+	}
+
+	public String getReportPath() {
+		return reportPath;
 	}
 
 	public void setServerType(int serverType) {

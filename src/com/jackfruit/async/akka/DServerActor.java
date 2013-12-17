@@ -7,7 +7,7 @@ import akka.actor.UntypedActor;
  * @author yaguang.xiao
  *
  */
-class DServerActior extends UntypedActor {
+class DServerActor extends UntypedActor {
 	
 	@Override
 	public void onReceive(Object msg) throws Exception {

@@ -1,6 +1,7 @@
 package com.jackfruit.async.akka;
 
 import akka.actor.ActorRef;
+import akka.actor.ActorSelection;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 
@@ -33,9 +34,21 @@ public class ServerCommunicateManager {
 		Config akkaSysConfig = DAkkaConfigBuilder.build(
 				config.getIp(), config.getPort());
 		actorSystem = ActorSystem.create(ACTOR_SYSTEM_NAME, akkaSysConfig);
-		serverActor = actorSystem.actorOf(Props.create(DServerActior.class), SERVER_ACTOR_NAME);
+		serverActor = actorSystem.actorOf(Props.create(DServerActor.class), SERVER_ACTOR_NAME);
 		
 		MessageHandler.setMessageRecieve(msgReceive);
+		
+		reportAfterStart(config.getReportPath(), config.getServerName());
+	}
+	
+	/**
+	 * Report to the target actor that current communication framework is started.
+	 * @param reportPath actor path
+	 * @param serverName current server name
+	 */
+	private static void reportAfterStart(String reportPath, String serverName) {
+		ActorSelection actorSelection = actorSystem.actorSelection(reportPath);
+		actorSelection.tell(serverName + " is started.", serverActor);
 	}
 	
 	/**
