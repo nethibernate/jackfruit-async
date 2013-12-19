@@ -1,10 +1,10 @@
-package com.jackfruit.async.msgreceive;
+package com.jackfruit.async.msghandle;
 /**
  * Receive message from other servers.
  * @author yaguang.xiao
  *
  */
-public interface MessageReceive {
+public interface MessageHandler {
 	
 	/**
 	 * Invoked when receive a message from other servers.
@@ -12,6 +12,6 @@ public interface MessageReceive {
 	 * @param message received message
 	 * @return true if handled correctly.
 	 */
-	boolean onRecevie(Object message);
+	void handle(Object message);
 	
 }

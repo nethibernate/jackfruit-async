@@ -9,24 +9,24 @@ import com.jackfruit.async.session.ServerSession;
  * @author yaguang.xiao
  *
  */
-class DPathBuilder {
+public class PathBuilder {
 	/**
 	 * Build the server actor's path from specific session.
 	 * @param session server session
 	 * @return the server actor's path
 	 */
-	static ActorSelection buildServerActorPath(ServerSession session) {
+	public static ActorSelection buildServerActorPath(ServerSession session) {
 		StringBuilder path = new StringBuilder();
 		path.append("akka.tcp://");
-		path.append(ServerCommunicateManager.ACTOR_SYSTEM_NAME);
+		path.append(AkkaManager.ACTOR_SYSTEM_NAME);
 		path.append("@");
 		path.append(session.getHost());
 		path.append(":");
 		path.append(session.getPort());
 		path.append("/");
-		path.append(ServerCommunicateManager.SERVER_ACTOR_NAME);
+		path.append(AkkaManager.SERVER_ACTOR_NAME);
 		
-		return ServerCommunicateManager.getActorSystem().actorSelection(path.toString());
+		return AkkaManager.Instance.getActorSystem().actorSelection(path.toString());
 	}
 	
 	/**
@@ -34,7 +34,7 @@ class DPathBuilder {
 	 * @param session session
 	 * @return the server actor's identifier
 	 */
-	static String getIdentifier(ServerSession session) {
+	public static String getIdentifier(ServerSession session) {
 		StringBuilder identifier = new StringBuilder();
 		identifier.append(session.getHost());
 		identifier.append(":");

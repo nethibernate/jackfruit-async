@@ -1,4 +1,4 @@
-package com.jackfruit.async.akka;
+package com.jackfruit.async.akka.config;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +16,7 @@ import com.typesafe.config.ConfigFactory;
  * @author yaguang.xiao
  *
  */
-class DAkkaConfigBuilder {
+public class AkkaConfigBuilder {
 	/**
 	 * The configuration file that enable akka's remote ability.
 	 */
@@ -29,7 +29,7 @@ class DAkkaConfigBuilder {
 	// read the content of the configuration file.
 	static {
 		try {
-			InputStream in = DAkkaConfigBuilder.class.getResource(AKKA_REMOTE_CONF).openStream();
+			InputStream in = AkkaConfigBuilder.class.getResource(AKKA_REMOTE_CONF).openStream();
 			REMOTE_CONTENT = IOUtils.readAndClose(in, Charsets.UTF_8.name());
 		} catch (IOException e) {
 			// throw the unchecked exception.
@@ -44,7 +44,7 @@ class DAkkaConfigBuilder {
 	 * @param port The port of the ActorSystem.
 	 * @return Configuration object based on akka configuration.
 	 */
-	static Config build(String host, int port) {
+	public static Config build(String host, int port) {
 		VelocityContext context = new VelocityContext();
 		context.put("hostname", host);
 		context.put("port", port);

@@ -1,10 +1,5 @@
 package com.jackfruit.async.config;
 
-import java.util.List;
-
-import com.jackfruit.util.enums.EnumUtil;
-import com.jackfruit.util.enums.IndexedEnum;
-
 /**
  * All server type such as
  * GameServer, AgentServer, DBServer, CacheServer
@@ -12,42 +7,32 @@ import com.jackfruit.util.enums.IndexedEnum;
  * @author yaguang.xiao
  *
  */
-public enum ServerType implements IndexedEnum {
-	GameServer(0),
-	AgentServer(1),
-	DBServer(2),
-	CacheServer(3)
+public enum ServerType {
+	GameServer,
+	AgentServer,
+	DBServer,
+	CacheServer
 	;
-
-	public final int index;
-	
-	ServerType(int index) {
-		this.index = index;
-	}
-	
-	@Override
-	public int getIndex() {
-		return this.index;
-	}
-	
-	private static final List<ServerType> values = IndexedEnumUtil
-			.toIndexes(ServerType.values());
 	
 	/**
-	 * Get the specific ServerType by index.
-	 * @param index
+	 * Check whether the type name is correct.
+	 * @param typeName
 	 * @return
 	 */
-	public static ServerType valueOf(int index) {
-		return EnumUtil.valueOf(values, index);
+	public static boolean check(String typeName) {
+		return get(typeName) != null;
 	}
 	
 	/**
-	 * Check whether the index is valid.
-	 * @param index
+	 * Get ServerType by name.
+	 * @param typeName
 	 * @return
 	 */
-	public static boolean check(int index) {
-		return EnumUtil.valueOf(values, index) != null;
+	public static ServerType get(String typeName) {
+		for(ServerType type : ServerType.values()) {
+			if(type.toString().equals(typeName))
+				return type;
+		}
+		return null;
 	}
 }
