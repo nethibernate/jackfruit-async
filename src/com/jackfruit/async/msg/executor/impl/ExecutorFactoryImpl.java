@@ -1,12 +1,12 @@
-package com.jackfruit.async.executor.impl;
+package com.jackfruit.async.msg.executor.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.jackfruit.async.executor.IExecutorFactory;
-import com.jackfruit.async.msg.ServerMsg;
+import com.jackfruit.async.ServerCommunicateManager;
+import com.jackfruit.async.msg.executor.IExecutorFactory;
 
 public class ExecutorFactoryImpl implements IExecutorFactory {
 
@@ -19,6 +19,12 @@ public class ExecutorFactoryImpl implements IExecutorFactory {
 		for(int i = 0;i < serverIdBindExecutors.length;i ++) {
 			serverIdBindExecutors[i] = Executors.newSingleThreadExecutor();
 		}
+	}
+	
+	@Override
+	public Object wrapMessage(Object message) {
+		int serverId = ServerCommunicateManager.getServerId();
+		return new ServerMsg(serverId, message);
 	}
 	
 	@Override
@@ -47,6 +53,13 @@ public class ExecutorFactoryImpl implements IExecutorFactory {
 		int executorIndex = id % this.serverIdBindExecutors.length;
 		executorIndex = executorIndex < 0? 0 : executorIndex;
 		return this.serverIdBindExecutors[executorIndex];
+	}
+	
+	@Override
+	public Object unwrapMessage(Object message) {
+		if(!(message instanceof ServerMsg))
+			return message;
+		return ((ServerMsg)message).msg;
 	}
 
 	@Override

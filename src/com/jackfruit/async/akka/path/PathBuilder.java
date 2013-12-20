@@ -1,8 +1,9 @@
-package com.jackfruit.async.akka;
+package com.jackfruit.async.akka.path;
 
 import akka.actor.ActorSelection;
 
-import com.jackfruit.async.session.ServerSession;
+import com.jackfruit.async.akka.AkkaManager;
+import com.jackfruit.async.akka.session.ServerSession;
 
 /**
  * ActorPath related method.

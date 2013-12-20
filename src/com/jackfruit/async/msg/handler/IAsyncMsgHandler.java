@@ -1,4 +1,4 @@
-package com.jackfruit.async.handler;
+package com.jackfruit.async.msg.handler;
 /**
  * Receive message from other servers.
  * @author yaguang.xiao

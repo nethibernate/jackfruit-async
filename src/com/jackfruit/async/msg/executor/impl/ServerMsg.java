@@ -1,4 +1,4 @@
-package com.jackfruit.async.msg;
+package com.jackfruit.async.msg.executor.impl;
 /**
  * Message sent and received by the communication framework.
  * @author yaguang.xiao

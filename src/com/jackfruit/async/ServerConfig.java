@@ -1,4 +1,4 @@
-package com.jackfruit.async.config;
+package com.jackfruit.async;
 
 /**
  * A common use for server configuration.

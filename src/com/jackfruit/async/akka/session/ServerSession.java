@@ -1,4 +1,4 @@
-package com.jackfruit.async.session;
+package com.jackfruit.async.akka.session;
 
 /**
  * A session used to communication between servers.

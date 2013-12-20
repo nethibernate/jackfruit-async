@@ -1,11 +1,18 @@
 package com.jackfruit.async.akka;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import akka.actor.ActorRef;
+import akka.actor.ActorSelection;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 
+import com.jackfruit.async.ServerConfig;
+import com.jackfruit.async.akka.actor.ServerActor;
 import com.jackfruit.async.akka.config.AkkaConfigBuilder;
-import com.jackfruit.async.config.ServerConfig;
+import com.jackfruit.async.akka.path.PathBuilder;
+import com.jackfruit.async.akka.session.ServerSession;
 import com.typesafe.config.Config;
 /**
  * Responsible for starting and managing the communication actor system.
@@ -15,9 +22,6 @@ import com.typesafe.config.Config;
 public class AkkaManager {
 	/** The only instance of AkkaManager. */
 	public static AkkaManager Instance;
-	
-	/** Current server's unique id. */
-	public final int serverId;
 	
 	/** An ActorSystem reside on the server. */
 	private ActorSystem actorSystem;
@@ -29,8 +33,10 @@ public class AkkaManager {
 	/** The name of the Actor that responsible for receive and send messages.*/
 	public static final String SERVER_ACTOR_NAME = "serverActor";
 	
+	/** Cached server actors' path. */
+	private Map<String, ActorSelection> servers = new HashMap<String, ActorSelection>();
+	
 	private AkkaManager(ServerConfig config) {
-		this.serverId = config.getServerId();
 		Config akkaSysConfig = AkkaConfigBuilder.build(
 				config.getIp(), config.getPort());
 		actorSystem = ActorSystem.create(ACTOR_SYSTEM_NAME, akkaSysConfig);
@@ -46,6 +52,22 @@ public class AkkaManager {
 		if(Instance == null) {
 			Instance = new AkkaManager(config);
 		}
+	}
+	
+	/**
+	 * Send the message to remote server.
+	 * @param message
+	 * @param session
+	 */
+	public void tell(Object message, ServerSession session) {
+		String identifier = PathBuilder.getIdentifier(session);
+		ActorSelection path = servers.get(identifier);
+		if(path == null) {
+			path = PathBuilder.buildServerActorPath(session);
+			servers.put(identifier, path);
+		}
+		
+		path.tell(message, AkkaManager.Instance.getServerAcotr());
 	}
 	
 	/**
