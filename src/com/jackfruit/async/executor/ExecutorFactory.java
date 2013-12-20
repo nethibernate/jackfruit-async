@@ -2,7 +2,7 @@ package com.jackfruit.async.executor;
 
 import java.util.concurrent.ExecutorService;
 /**
- * Find a appropriate ExecutorService.
+ * Find a appropriate ExecutorService for specific message.
  * @author yaguang.xiao
  *
  */
@@ -13,4 +13,9 @@ public interface ExecutorFactory {
 	 * @return
 	 */
 	ExecutorService getExecutor(Object message);
+	
+	/**
+	 * Shutdown the executors.
+	 */
+	void shutdown();
 }

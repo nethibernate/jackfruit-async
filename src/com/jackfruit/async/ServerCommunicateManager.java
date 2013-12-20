@@ -1,6 +1,7 @@
 package com.jackfruit.async;
 
 import com.jackfruit.async.akka.AkkaManager;
+import com.jackfruit.async.akka.MessageManager;
 import com.jackfruit.async.config.ServerConfig;
 /**
  * This manage the whole communication system.
@@ -22,6 +23,7 @@ public class ServerCommunicateManager {
 	 */
 	public static void shutDown() {
 		AkkaManager.Instance.close();
+		MessageManager.Instance.shutdown();
 	}
 	
 }

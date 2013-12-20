@@ -102,4 +102,11 @@ public class MessageManager {
 		});
 		return true;
 	}
+	
+	/**
+	 * Shutdown the MessageManager thread.
+	 */
+	public synchronized void shutdown() {
+		this.executorFactory.shutdown();
+	}
 }

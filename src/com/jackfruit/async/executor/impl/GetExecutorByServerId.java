@@ -49,4 +49,11 @@ public class GetExecutorByServerId implements ExecutorFactory {
 		return this.serverIdBindExecutors[executorIndex];
 	}
 
+	@Override
+	public void shutdown() {
+		for(int i = 0;i < serverIdBindExecutors.length;i ++) {
+			this.serverIdBindExecutors[i].shutdown();
+		}
+	}
+
 }
