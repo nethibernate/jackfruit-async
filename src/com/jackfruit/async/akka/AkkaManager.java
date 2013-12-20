@@ -1,13 +1,12 @@
 package com.jackfruit.async.akka;
 
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.actor.Props;
+
 import com.jackfruit.async.akka.config.AkkaConfigBuilder;
 import com.jackfruit.async.config.ServerConfig;
 import com.typesafe.config.Config;
-
-import akka.actor.ActorRef;
-import akka.actor.ActorSelection;
-import akka.actor.ActorSystem;
-import akka.actor.Props;
 /**
  * Responsible for starting and managing the communication actor system.
  * @author yaguang.xiao
@@ -36,8 +35,6 @@ public class AkkaManager {
 				config.getIp(), config.getPort());
 		actorSystem = ActorSystem.create(ACTOR_SYSTEM_NAME, akkaSysConfig);
 		serverActor = actorSystem.actorOf(Props.create(ServerActor.class), SERVER_ACTOR_NAME);
-		
-		reportAfterStart(config.getReportPath(), config.getServerName());
 	}
 	
 	/**
@@ -56,16 +53,6 @@ public class AkkaManager {
 	 */
 	public void close() {
 		actorSystem.shutdown();
-	}
-	
-	/**
-	 * Report to the target actor that current communication framework is started.
-	 * @param reportPath actor path
-	 * @param serverName current server name
-	 */
-	private void reportAfterStart(String reportPath, String serverName) {
-		ActorSelection actorSelection = actorSystem.actorSelection(reportPath);
-		actorSelection.tell(serverName + " is started.", serverActor);
 	}
 	
 	/**

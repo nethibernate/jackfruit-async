@@ -7,10 +7,10 @@ import java.util.concurrent.ExecutorService;
 import akka.actor.ActorRef;
 import akka.actor.ActorSelection;
 
-import com.jackfruit.async.executor.ExecutorFactory;
-import com.jackfruit.async.executor.impl.GetExecutorByServerId;
+import com.jackfruit.async.executor.IExecutorFactory;
+import com.jackfruit.async.executor.impl.ExecutorFactoryImpl;
+import com.jackfruit.async.handler.IAsyncMsgHandler;
 import com.jackfruit.async.msg.ServerMsg;
-import com.jackfruit.async.msghandle.MessageHandler;
 import com.jackfruit.async.session.ServerSession;
 /**
  * 
@@ -23,9 +23,9 @@ public class MessageManager {
 	/** Cached server actors' path. */
 	private Map<String, ActorSelection> servers = new HashMap<String, ActorSelection>();
 	/** Factory of executors which will execute the process of messages. */
-	private ExecutorFactory executorFactory = new GetExecutorByServerId();
+	private IExecutorFactory executorFactory = new ExecutorFactoryImpl();
 	/** It's onReceive method will be invoked when receive a message. */
-	private MessageHandler msgHandler;
+	private IAsyncMsgHandler msgHandler;
 	
 	/**
 	 * Protect the instance of MessageManager
@@ -65,7 +65,7 @@ public class MessageManager {
 	 *  will produce ExecutorService to process messages.
 	 * @param executorFactory
 	 */
-	public synchronized void setExecutorFactory(ExecutorFactory executorFactory) {
+	public synchronized void setExecutorFactory(IExecutorFactory executorFactory) {
 		this.executorFactory = executorFactory;
 	}
 	
@@ -73,7 +73,7 @@ public class MessageManager {
 	 * Set the message handle object.
 	 * @param msgReceiveObject
 	 */
-	public synchronized void setMessageRecieve(MessageHandler msgReceiveObject) {
+	public synchronized void setMessageRecieve(IAsyncMsgHandler msgReceiveObject) {
 		msgHandler = msgReceiveObject;
 	}
 	
@@ -83,7 +83,7 @@ public class MessageManager {
 	 * @param sender message sender
 	 * @return
 	 */
-	public synchronized boolean receiveMessage(final Object message, ActorRef sender) {
+	public boolean receiveMessage(final Object message, ActorRef sender) {
 		if(executorFactory == null)
 			return false;
 		ExecutorService executor = executorFactory.getExecutor(message);
@@ -94,7 +94,7 @@ public class MessageManager {
 			@Override
 			public void run() {
 				if(msgHandler != null) {
-					msgHandler.handle(message);
+					msgHandler.onRecived(message);
 				}
 				
 			}

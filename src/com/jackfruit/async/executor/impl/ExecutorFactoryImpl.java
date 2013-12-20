@@ -5,16 +5,16 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.jackfruit.async.executor.ExecutorFactory;
+import com.jackfruit.async.executor.IExecutorFactory;
 import com.jackfruit.async.msg.ServerMsg;
 
-public class GetExecutorByServerId implements ExecutorFactory {
+public class ExecutorFactoryImpl implements IExecutorFactory {
 
 	private final ExecutorService[] serverIdBindExecutors;
 	private int count = 0;
 	private Map<Integer, Integer> serverMap = new HashMap<Integer, Integer>();
 	
-	public GetExecutorByServerId() {
+	public ExecutorFactoryImpl() {
 		serverIdBindExecutors = new ExecutorService[10];
 		for(int i = 0;i < serverIdBindExecutors.length;i ++) {
 			serverIdBindExecutors[i] = Executors.newSingleThreadExecutor();

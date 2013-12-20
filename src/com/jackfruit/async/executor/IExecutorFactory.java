@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutorService;
  * @author yaguang.xiao
  *
  */
-public interface ExecutorFactory {
+public interface IExecutorFactory {
 	/**
 	 * Find a appropriate ExecutorService for the input message.
 	 * @param message
