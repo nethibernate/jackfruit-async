@@ -1,8 +1,5 @@
 package com.jackfruit.async.akka.path;
 
-import akka.actor.ActorSelection;
-
-import com.jackfruit.async.akka.AkkaManager;
 import com.jackfruit.async.akka.session.ServerSession;
 
 /**
@@ -16,18 +13,18 @@ public class PathBuilder {
 	 * @param session server session
 	 * @return the server actor's path
 	 */
-	public static ActorSelection buildServerActorPath(ServerSession session) {
+	public static String buildServerActorPath(ServerSession session, String systemName, String actorName) {
 		StringBuilder path = new StringBuilder();
 		path.append("akka.tcp://");
-		path.append(AkkaManager.ACTOR_SYSTEM_NAME);
+		path.append(systemName);
 		path.append("@");
 		path.append(session.getHost());
 		path.append(":");
 		path.append(session.getPort());
 		path.append("/");
-		path.append(AkkaManager.SERVER_ACTOR_NAME);
+		path.append(actorName);
 		
-		return AkkaManager.Instance.getActorSystem().actorSelection(path.toString());
+		return path.toString();
 	}
 	
 	/**

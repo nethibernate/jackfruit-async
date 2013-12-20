@@ -63,7 +63,8 @@ public class AkkaManager {
 		String identifier = PathBuilder.getIdentifier(session);
 		ActorSelection path = servers.get(identifier);
 		if(path == null) {
-			path = PathBuilder.buildServerActorPath(session);
+			String pathStr = PathBuilder.buildServerActorPath(session, ACTOR_SYSTEM_NAME, SERVER_ACTOR_NAME);
+			path = actorSystem.actorSelection(pathStr);
 			servers.put(identifier, path);
 		}
 		
