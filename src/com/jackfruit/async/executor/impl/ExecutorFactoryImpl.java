@@ -48,6 +48,13 @@ public class ExecutorFactoryImpl implements IBindServerIdExecutorFactory {
 			this.serverIdBindExecutors[i].shutdown();
 		}
 	}
+	
+	@Override
+	public void shutdownNow() {
+		for(int i = 0;i < serverIdBindExecutors.length;i ++) {
+			this.serverIdBindExecutors[i].shutdownNow();
+		}
+	}
 
 	@Override
 	public void setServerId(int serverId) {

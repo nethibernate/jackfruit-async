@@ -15,7 +15,15 @@ public interface IExecutorFactory {
 	ExecutorService getExecutor();
 
 	/**
-	 * Shutdown the executors.
+	 * Shutdown the executors after all queued tasks
+	 * have been completed.
 	 */
 	void shutdown();
+	
+	/**
+	 * Shutdown the executors immediately,
+	 * cancel all queued tasks that haven't started yet,
+	 * and attempt to interrupt the running tasks.
+	 */
+	void shutdownNow();
 }
