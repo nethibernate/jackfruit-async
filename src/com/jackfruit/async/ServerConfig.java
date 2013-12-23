@@ -19,6 +19,8 @@ public class ServerConfig {
 	private int port;
 	/** 服务器之间通信模块构建成功之后的汇报路径 */
 	private String reportPath;
+	/** 默认线程池的大小 */
+	private int defaultExecutorThreadNum;
 
 	public int getServerType() {
 		return serverType;
@@ -42,6 +44,10 @@ public class ServerConfig {
 
 	public String getReportPath() {
 		return reportPath;
+	}
+
+	public int getDefaultExecutorThreadNum() {
+		return defaultExecutorThreadNum;
 	}
 
 	public void setServerType(int serverType) {

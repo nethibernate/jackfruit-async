@@ -3,6 +3,7 @@ package com.jackfruit.async;
 import com.jackfruit.async.akka.AkkaManager;
 import com.jackfruit.async.akka.session.ServerSession;
 import com.jackfruit.async.msg.MessageManager;
+import com.jackfruit.async.msg.ServerMsg;
 /**
  * This manage the whole communication system.
  * @author yaguang.xiao
@@ -19,6 +20,7 @@ public class ServerCommunicateManager {
 	 */
 	public static void start(ServerConfig config) {
 		AkkaManager.buildAkkaManager(config);
+		MessageManager.buildMessageManager(config.getDefaultExecutorThreadNum());
 		serverId = config.getServerId();
 	}
 	
@@ -28,30 +30,30 @@ public class ServerCommunicateManager {
 	 * @param session
 	 */
 	public static void sendMessage(Object message, ServerSession session) {
-		if(AkkaManager.Instance == null)
+		if(AkkaManager.Instance == null || MessageManager.Instance == null)
 			return;
 		
-		Object wrappedMsg = MessageManager.Instance.wrapMessage(message);
-		AkkaManager.Instance.tell(wrappedMsg, session);
+		AkkaManager.Instance.tell(wrapMessage(message), session);
+	}
+	
+	/**
+	 * Wrap the message to be sent.
+	 * @param message
+	 * @return
+	 */
+	private static ServerMsg wrapMessage(Object message) {
+		return new ServerMsg(serverId, message);
 	}
 	
 	/**
 	 * Shutdown the communication system.
 	 */
 	public static void shutDown() {
-		if(AkkaManager.Instance == null)
+		if(AkkaManager.Instance == null || MessageManager.Instance == null)
 			return;
 		
 		AkkaManager.Instance.close();
 		MessageManager.Instance.shutdown();
-	}
-	
-	/**
-	 * Get the unique Server Id.
-	 * @return
-	 */
-	public static int getServerId() {
-		return serverId;
 	}
 	
 }

@@ -2,8 +2,9 @@ package com.jackfruit.async.msg;
 
 import java.util.concurrent.ExecutorService;
 
-import com.jackfruit.async.msg.executor.IExecutorFactory;
-import com.jackfruit.async.msg.executor.impl.ExecutorFactoryImpl;
+import com.jackfruit.async.executor.IExecutorFactory;
+import com.jackfruit.async.executor.impl.ExecutorFactoryImpl;
+import com.jackfruit.async.executor.impl.IBindServerIdExecutorFactory;
 import com.jackfruit.async.msg.handler.IAsyncMsgHandler;
 import com.jackfruit.async.msg.handler.impl.AsyncMsgHandlerImpl;
 /**
@@ -11,24 +12,27 @@ import com.jackfruit.async.msg.handler.impl.AsyncMsgHandlerImpl;
  * @author yaguang.xiao
  *
  */
-public enum MessageManager {
+public class MessageManager {
 	/** The only object of MessageManager. */
-	Instance;
+	public static MessageManager Instance;
 	
 	/** Factory of executors which will execute the process of messages. */
-	private IExecutorFactory executorFactory = new ExecutorFactoryImpl();
+	private IExecutorFactory executorFactory;
 	/** It's onReceive method will be invoked when receive a message. */
 	private IAsyncMsgHandler asyncMsgHandler = new AsyncMsgHandlerImpl();
 	
+	private MessageManager(int threadNum) {
+		executorFactory = new ExecutorFactoryImpl(threadNum);
+	}
+	
 	/**
-	 * Wrap the message to be sent.
-	 * @param message
-	 * @return
+	 * Build the only object of MessageManager.
+	 * @param threadNum
 	 */
-	public Object wrapMessage(Object message) {
-		if(this.executorFactory == null)
-			return message;
-		return this.executorFactory.wrapMessage(message);
+	public static void buildMessageManager(int threadNum) {
+		if(Instance == null) {
+			Instance = new MessageManager(threadNum);
+		}
 	}
 	
 	/**
@@ -40,17 +44,24 @@ public enum MessageManager {
 	public boolean receiveMessage(final Object message) {
 		if(executorFactory == null)
 			return false;
-		ExecutorService executor = executorFactory.getExecutor(message);
+		
+		if(!(message instanceof ServerMsg))
+			return false;
+		final ServerMsg serverMsg = (ServerMsg)message;
+		if(executorFactory instanceof IBindServerIdExecutorFactory) {
+			((IBindServerIdExecutorFactory)executorFactory).setServerId(serverMsg.serverId);
+		}
+		
+		ExecutorService executor = executorFactory.getExecutor();
 		if(executor == null)
 			return false;
 		
-		final Object originalMsg = this.executorFactory.unwrapMessage(message);
 		executor.submit(new Runnable() {
 
 			@Override
 			public void run() {
 				if(asyncMsgHandler != null) {
-					asyncMsgHandler.onRecived(originalMsg);
+					asyncMsgHandler.onRecived(serverMsg.msg);
 				}
 				
 			}

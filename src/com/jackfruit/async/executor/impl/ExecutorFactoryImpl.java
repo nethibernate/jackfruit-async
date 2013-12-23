@@ -1,44 +1,31 @@
-package com.jackfruit.async.msg.executor.impl;
+package com.jackfruit.async.executor.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.jackfruit.async.ServerCommunicateManager;
-import com.jackfruit.async.msg.executor.IExecutorFactory;
-
-public class ExecutorFactoryImpl implements IExecutorFactory {
+public class ExecutorFactoryImpl implements IBindServerIdExecutorFactory {
 
 	private final ExecutorService[] serverIdBindExecutors;
 	private int count = 0;
 	private Map<Integer, Integer> serverMap = new HashMap<Integer, Integer>();
+	private int curServerId;
 	
-	public ExecutorFactoryImpl() {
-		serverIdBindExecutors = new ExecutorService[10];
+	public ExecutorFactoryImpl(int threadNum) {
+		serverIdBindExecutors = new ExecutorService[threadNum];
 		for(int i = 0;i < serverIdBindExecutors.length;i ++) {
 			serverIdBindExecutors[i] = Executors.newSingleThreadExecutor();
 		}
 	}
 	
 	@Override
-	public Object wrapMessage(Object message) {
-		int serverId = ServerCommunicateManager.getServerId();
-		return new ServerMsg(serverId, message);
-	}
-	
-	@Override
-	public ExecutorService getExecutor(Object message) {
-		if(!(message instanceof ServerMsg))
-			return null;
-		
-		ServerMsg serverMsg = (ServerMsg)message;
-		int serverId = serverMsg.serverId;
-		Integer arriveId = serverMap.get(serverId);
+	public ExecutorService getExecutor() {
+		Integer arriveId = serverMap.get(curServerId);
 		if(arriveId == null) {
 			this.count ++;
 			arriveId = this.count;
-			this.serverMap.put(serverId, arriveId);
+			this.serverMap.put(curServerId, arriveId);
 		}
 		
 		return this.getExecutorById(arriveId);
@@ -54,19 +41,17 @@ public class ExecutorFactoryImpl implements IExecutorFactory {
 		executorIndex = executorIndex < 0? 0 : executorIndex;
 		return this.serverIdBindExecutors[executorIndex];
 	}
-	
-	@Override
-	public Object unwrapMessage(Object message) {
-		if(!(message instanceof ServerMsg))
-			return message;
-		return ((ServerMsg)message).msg;
-	}
 
 	@Override
 	public void shutdown() {
 		for(int i = 0;i < serverIdBindExecutors.length;i ++) {
 			this.serverIdBindExecutors[i].shutdown();
 		}
+	}
+
+	@Override
+	public void setServerId(int serverId) {
+		this.curServerId = serverId;
 	}
 
 }
