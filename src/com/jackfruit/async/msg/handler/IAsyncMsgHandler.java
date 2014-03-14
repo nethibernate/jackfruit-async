@@ -1,4 +1,7 @@
 package com.jackfruit.async.msg.handler;
+
+import com.jackfruit.async.akka.session.ServerSession;
+
 /**
  * Receive message from other servers.
  * @author yaguang.xiao
@@ -12,6 +15,6 @@ public interface IAsyncMsgHandler {
 	 * @param message received message
 	 * @return true if handled correctly.
 	 */
-	void onRecived(Object message);
+	void onRecived(Object message, ServerSession session);
 	
 }

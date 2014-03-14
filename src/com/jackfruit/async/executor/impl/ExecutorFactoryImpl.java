@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class ExecutorFactoryImpl implements IBindServerIdExecutorFactory {
 
@@ -59,6 +60,13 @@ public class ExecutorFactoryImpl implements IBindServerIdExecutorFactory {
 	@Override
 	public void setServerId(int serverId) {
 		this.curServerId = serverId;
+	}
+
+	@Override
+	public void awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
+		for(int i = 0;i < serverIdBindExecutors.length;i ++) {
+			this.serverIdBindExecutors[i].awaitTermination(timeout, unit);
+		}
 	}
 
 }

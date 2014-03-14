@@ -22,6 +22,7 @@ public class PathBuilder {
 		path.append(":");
 		path.append(session.getPort());
 		path.append("/");
+		path.append("user/");
 		path.append(actorName);
 		
 		return path.toString();

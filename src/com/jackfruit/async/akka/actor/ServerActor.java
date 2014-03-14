@@ -13,9 +13,7 @@ public class ServerActor extends UntypedActor {
 	
 	@Override
 	public void onReceive(Object msg) throws Exception {
-		if(!MessageManager.Instance.receiveMessage(msg)) {
-			unhandled(msg);
-		}
+		MessageManager.Instance.receiveMessage(msg);
 	}
 
 }

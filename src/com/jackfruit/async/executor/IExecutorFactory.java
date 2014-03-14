@@ -1,6 +1,7 @@
 package com.jackfruit.async.executor;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 /**
  * Find a appropriate ExecutorService for specific message.
  * @author yaguang.xiao
@@ -19,6 +20,12 @@ public interface IExecutorFactory {
 	 * have been completed.
 	 */
 	void shutdown();
+	
+	/**
+	 * Wait the executors to terminate.
+	 * @throws InterruptedException 
+	 */
+	void awaitTermination(long timeout, TimeUnit unit) throws InterruptedException;
 	
 	/**
 	 * Shutdown the executors immediately,

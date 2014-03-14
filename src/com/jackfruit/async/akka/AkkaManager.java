@@ -1,6 +1,5 @@
 package com.jackfruit.async.akka;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import akka.actor.ActorRef;
@@ -8,6 +7,7 @@ import akka.actor.ActorSelection;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 
+import com.google.common.collect.Maps;
 import com.jackfruit.async.ServerConfig;
 import com.jackfruit.async.akka.actor.ServerActor;
 import com.jackfruit.async.akka.config.AkkaConfigBuilder;
@@ -29,17 +29,23 @@ public class AkkaManager {
 	public static final String ACTOR_SYSTEM_NAME = "serverActorSystem";
 	
 	/** The Actor that responsible for receive and send messages. */
-	private ActorRef serverActor;
+	private final ActorRef serverActor;
 	/** The name of the Actor that responsible for receive and send messages.*/
 	public static final String SERVER_ACTOR_NAME = "serverActor";
 	
 	/** Cached server actors' path. */
-	private Map<String, ActorSelection> servers = new HashMap<String, ActorSelection>();
+	private Map<String, ActorSelection> servers = Maps.newHashMap();
 	
 	private AkkaManager(ServerConfig config) {
 		Config akkaSysConfig = AkkaConfigBuilder.build(
 				config.getIp(), config.getPort());
-		actorSystem = ActorSystem.create(ACTOR_SYSTEM_NAME, akkaSysConfig);
+		actorSystem = null;
+		try {
+			actorSystem = ActorSystem.create(ACTOR_SYSTEM_NAME, akkaSysConfig);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		serverActor = actorSystem.actorOf(Props.create(ServerActor.class), SERVER_ACTOR_NAME);
 	}
 	
@@ -68,30 +74,21 @@ public class AkkaManager {
 			servers.put(identifier, path);
 		}
 		
-		path.tell(message, AkkaManager.Instance.getServerAcotr());
+		path.tell(message, serverActor);
 	}
 	
 	/**
 	 * Shutdown the actor system.
 	 */
-	public void close() {
+	public void shutdown() {
 		actorSystem.shutdown();
 	}
 	
 	/**
-	 * Get ActorSystem reside on the server.
-	 * @return
+	 * Wait actorSystem to terminate.
 	 */
-	public ActorSystem getActorSystem() {
-		return actorSystem;
-	}
-	
-	/**
-	 * Get the actor that responsible for receive and send messages.
-	 * @return
-	 */
-	public ActorRef getServerAcotr() {
-		return serverActor;
+	public void awaitTermination() {
+		actorSystem.awaitTermination();
 	}
 	
 }

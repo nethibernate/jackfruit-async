@@ -1,7 +1,9 @@
 package com.jackfruit.async.msg;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import com.jackfruit.async.executor.AsyncExecutor;
 import com.jackfruit.async.executor.IExecutorFactory;
 import com.jackfruit.async.executor.impl.ExecutorFactoryImpl;
 import com.jackfruit.async.executor.impl.IBindServerIdExecutorFactory;
@@ -41,12 +43,27 @@ public class MessageManager {
 	 * @param sender message sender
 	 * @return
 	 */
-	public boolean receiveMessage(final Object message) {
+	public void receiveMessage(final Object message) {
+		AsyncExecutor.Instance.submit(new Runnable() {
+
+			@Override
+			public void run() {
+				handleMessageInAsyncExecutor(message);
+			}
+			
+		});
+	}
+	
+	/**
+	 * Handle the message that has been received in AsyncExecutor.
+	 * @param message
+	 */
+	private void handleMessageInAsyncExecutor(final Object message) {
 		if(executorFactory == null)
-			return false;
+			return;
 		
 		if(!(message instanceof ServerMsg))
-			return false;
+			return;
 		final ServerMsg serverMsg = (ServerMsg)message;
 		if(executorFactory instanceof IBindServerIdExecutorFactory) {
 			((IBindServerIdExecutorFactory)executorFactory).setServerId(serverMsg.serverId);
@@ -54,20 +71,19 @@ public class MessageManager {
 		
 		ExecutorService executor = executorFactory.getExecutor();
 		if(executor == null)
-			return false;
+			return;
 		
 		executor.submit(new Runnable() {
 
 			@Override
 			public void run() {
 				if(asyncMsgHandler != null) {
-					asyncMsgHandler.onRecived(serverMsg.msg);
+					asyncMsgHandler.onRecived(serverMsg.msg, serverMsg.serverSession);
 				}
 				
 			}
 			
 		});
-		return true;
 	}
 	
 	/**
@@ -75,16 +91,30 @@ public class MessageManager {
 	 *  will produce ExecutorService to process messages.
 	 * @param executorFactory
 	 */
-	public void setExecutorFactory(IExecutorFactory executorFactory) {
-		this.executorFactory = executorFactory;
+	public void setExecutorFactory(final IExecutorFactory executorFactory) {
+		AsyncExecutor.Instance.submit(new Runnable() {
+
+			@Override
+			public void run() {
+				MessageManager.Instance.executorFactory = executorFactory;
+			}
+			
+		});
 	}
 	
 	/**
 	 * Set the message handler object.
 	 * @param asyncMsgHandler
 	 */
-	public void setAsyncMsgHandler(IAsyncMsgHandler asyncMsgHandler) {
-		this.asyncMsgHandler = asyncMsgHandler;
+	public static void setAsyncMsgHandler(final IAsyncMsgHandler asyncMsgHandler) {
+		AsyncExecutor.Instance.submit(new Runnable() {
+
+			@Override
+			public void run() {
+				MessageManager.Instance.asyncMsgHandler = asyncMsgHandler;
+			}
+			
+		});
 	}
 	
 	/**
@@ -92,5 +122,15 @@ public class MessageManager {
 	 */
 	public void shutdown() {
 		this.executorFactory.shutdown();
+	}
+	
+	/**
+	 * Wait the MessageManager threads to terminate.
+	 * @param timeout
+	 * @param unit
+	 * @throws InterruptedException 
+	 */
+	public void awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
+		this.executorFactory.awaitTermination(timeout, unit);
 	}
 }

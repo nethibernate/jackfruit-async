@@ -8,7 +8,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
 import com.google.common.base.Charsets;
-import com.renren.game.core.config.IOUtils;
+import com.jackfruit.config.IOUtils;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 /**
