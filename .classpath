@@ -21,5 +21,6 @@
 	<classpathentry kind="lib" path="/Jackfruit/lib/uncommons-maths-1.2.2a.jar"/>
 	<classpathentry kind="lib" path="/Jackfruit/lib/velocity-1.7-dep.jar"/>
 	<classpathentry kind="lib" path="/Jackfruit/lib/velocity-1.7.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Jackfruit"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
